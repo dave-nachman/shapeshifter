@@ -1,0 +1,657 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Shapeshifter", "version": "1.0.0" },
+  "paths": {
+    "/collections": {
+      "get": {
+        "operationId": "get-collections",
+        "description": "Get all collections",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "documents": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": { "_id": { "type": "string" } },
+                          "required": ["_id"],
+                          "additionalProperties": true
+                        }
+                      }
+                    },
+                    "required": ["name", "documents"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create-collection",
+        "description": "Create a new collection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "name": { "type": "string" } },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": { "_id": { "type": "string" } },
+                        "required": ["_id"],
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": ["name", "documents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}": {
+      "get": {
+        "operationId": "get-collection",
+        "description": "Get a single collection by name",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": { "_id": { "type": "string" } },
+                        "required": ["_id"],
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": ["name", "documents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}/schema": {
+      "get": {
+        "operationId": "get-collection-schema",
+        "description": "Get JSON schema for a collection",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    { "type": "object", "additionalProperties": true },
+                    { "type": "string" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}/documents": {
+      "get": {
+        "operationId": "query-documents",
+        "description": "Query documents in a collection",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": { "_id": { "type": "string" } },
+                        "required": ["_id"],
+                        "additionalProperties": true
+                      }
+                    },
+                    "operation": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "map" },
+                            "jqMappingCommandPerDocument": { "type": "string" }
+                          },
+                          "required": ["type", "jqMappingCommandPerDocument"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "reject" },
+                            "message": { "type": "string" }
+                          },
+                          "required": ["type", "message"]
+                        }
+                      ]
+                    }
+                  },
+                  "required": ["documents"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create-document",
+        "description": "Create a new document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": true }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "document": {
+                      "type": "object",
+                      "properties": { "_id": { "type": "string" } },
+                      "required": ["_id"],
+                      "additionalProperties": true
+                    },
+                    "operation": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "map" },
+                            "jqMappingCommandPerDocument": { "type": "string" }
+                          },
+                          "required": ["type", "jqMappingCommandPerDocument"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "reject" },
+                            "message": { "type": "string" }
+                          },
+                          "required": ["type", "message"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "isSubset" }
+                          },
+                          "required": ["type"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "isSuperset" }
+                          },
+                          "required": ["type"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "migrate" },
+                            "newSchema": { "type": "object" },
+                            "jqMappingCommandPerDocumentFromOldToNewSchema": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "newSchema",
+                            "jqMappingCommandPerDocumentFromOldToNewSchema"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-documents",
+        "description": "Delete multiple documents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "documentIds": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                },
+                "required": ["documentIds"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}/documents/query": {
+      "post": {
+        "operationId": "query-documents-by-shape",
+        "description": "Query documents in a collection",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shape": { "type": "object", "additionalProperties": true },
+                  "filter": { "type": "object", "additionalProperties": true }
+                },
+                "required": ["shape"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": { "_id": { "type": "string" } },
+                        "required": ["_id"],
+                        "additionalProperties": true
+                      }
+                    },
+                    "operation": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "map" },
+                            "jqMappingCommandPerDocument": { "type": "string" }
+                          },
+                          "required": ["type", "jqMappingCommandPerDocument"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "reject" },
+                            "message": { "type": "string" }
+                          },
+                          "required": ["type", "message"]
+                        }
+                      ]
+                    }
+                  },
+                  "required": ["documents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}/documents/{documentId}": {
+      "get": {
+        "operationId": "get-document",
+        "description": "Get a single document by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "documentId",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "_id": { "type": "string" } },
+                  "required": ["_id"],
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update-document",
+        "description": "Update a document partially",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "documentId",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": true }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "_id": { "type": "string" } },
+                  "required": ["_id"],
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "replace-document",
+        "description": "Replace a document completely",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "documentId",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": true }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "_id": { "type": "string" } },
+                  "required": ["_id"],
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-document",
+        "description": "Delete a document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "documentId",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": { "schema": { "type": "object" } }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collection}/documents/batch": {
+      "post": {
+        "operationId": "create-documents",
+        "description": "Create multiple documents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "collection",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "object", "additionalProperties": true }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": { "_id": { "type": "string" } },
+                        "required": ["_id"],
+                        "additionalProperties": true
+                      }
+                    },
+                    "operation": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "map" },
+                            "jqMappingCommandPerDocument": { "type": "string" }
+                          },
+                          "required": ["type", "jqMappingCommandPerDocument"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "reject" },
+                            "message": { "type": "string" }
+                          },
+                          "required": ["type", "message"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "isSubset" }
+                          },
+                          "required": ["type"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "isSuperset" }
+                          },
+                          "required": ["type"]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "const": "migrate" },
+                            "newSchema": { "type": "object" },
+                            "jqMappingCommandPerDocumentFromOldToNewSchema": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "newSchema",
+                            "jqMappingCommandPerDocumentFromOldToNewSchema"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
