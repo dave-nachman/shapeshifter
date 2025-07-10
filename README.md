@@ -6,6 +6,8 @@ Explicit schemas are often a desirable feature in databases, but schemas come wi
 
 LLMs are already being used outside of databases to create a more flexible interface between users and databases—for example, translating natural language into SQL. Shapeshifter explores using LLMs for this purpose as not a separate layer but as a first-class feature of the database itself.
 
+Shapeshifter was presented in a [HYTRADBOI](https://www.hytradboi.com/) (Have you tried rubbing a database on it?) 2025 [lightening talk](https://www.hytradboi.com/2025/0e959091-26f0-43fa-87e0-b2c1e4536f6b-shapeshifter-using-llms-inside-a-database-for-schema-flexibility).
+
 ## Try it out
 
 Try out Shapeshifter in an [online playground](https://shapeshifter.davenachman.com/).
